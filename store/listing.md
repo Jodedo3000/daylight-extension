@@ -29,6 +29,7 @@ Let users turn off websites' dark mode and view pages in a light theme.
 ## Permission justifications
 - storage: Save the auto-mode setting and each site's on/off preference so they persist and sync.
 - activeTab: Lets the popup read the current tab's address when the user clicks the icon, so it can show and save the setting for that site.
+- scripting: Applies the user's setting to tabs that were already open at install or update time, so Daylight works without a manual page reload.
 - Host access (<all_urls>): The extension lightens whatever dark site the user visits, so it must be able to run on any site. It does not read page content or transmit anything.
 
 ## Data usage certification

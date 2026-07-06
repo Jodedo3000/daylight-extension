@@ -3,7 +3,11 @@
   "name": "Daylight: Turn Off Dark Mode",
   "version": "1.0.0",
   "description": "Turn off dark mode on any website. Lightens dark sites automatically or per site with one click. No sign-up, no tracking.",
-  "permissions": ["storage", "activeTab"],
+  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": ["http://*/*", "https://*/*"],
+  "background": {
+    "service_worker": "src/background.js"
+  },
   "action": {
     "default_popup": "src/popup.html",
     "default_title": "Daylight: turn off dark mode"

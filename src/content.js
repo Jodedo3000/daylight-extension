@@ -21,6 +21,11 @@
 (function () {
   "use strict";
 
+  // The background worker injects this file into already-open tabs on
+  // install/update; guard against running twice in the same document.
+  if (window.__daylightLoaded) return;
+  window.__daylightLoaded = true;
+
   var STYLE_ID = "daylight-style";
   var host = location.hostname;
   var appliedMode = null;
