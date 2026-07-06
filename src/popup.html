@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <img src="../icons/icon48.png" alt="" width="22" height="22" />
+      <span class="wordmark">Daylight</span>
+    </header>
+
+    <main>
+      <section class="card">
+        <p class="eyebrow">Current site</p>
+        <p class="site" id="site">this site</p>
+
+        <label class="toggle" id="toggleRow">
+          <span class="toggle-label">Turn off dark mode</span>
+          <input type="checkbox" id="enabled" />
+          <span class="switch" aria-hidden="true"></span>
+        </label>
+
+        <button class="link" id="reset" hidden>Reset to automatic</button>
+      </section>
+
+      <fieldset class="modes" id="modes" disabled>
+        <legend>Method</legend>
+        <div class="segments">
+          <label>
+            <input type="radio" name="mode" value="force" checked />
+            <span class="seg">
+              <strong>Force light</strong>
+              <small>For stubborn sites</small>
+            </span>
+          </label>
+          <label>
+            <input type="radio" name="mode" value="gentle" />
+            <span class="seg">
+              <strong>Gentle</strong>
+              <small>System-theme sites</small>
+            </span>
+          </label>
+        </div>
+      </fieldset>
+
+      <label class="toggle auto" id="autoRow">
+        <span class="toggle-label">
+          Auto mode
+          <small>Lighten every dark site for me</small>
+        </span>
+        <input type="checkbox" id="auto" />
+        <span class="switch" aria-hidden="true"></span>
+      </label>
+
+      <p class="note" id="note" hidden></p>
+    </main>
+
+    <footer>Changes apply instantly · saved per site</footer>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

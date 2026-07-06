@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Daylight: Turn Off Dark Mode",
+  "version": "1.0.0",
+  "description": "Turn off dark mode on any website. Lightens dark sites automatically or per site with one click. No sign-up, no tracking.",
+  "permissions": ["storage", "activeTab"],
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_title": "Daylight: turn off dark mode"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content.js"],
+      "run_at": "document_start",
+      "all_frames": false
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
