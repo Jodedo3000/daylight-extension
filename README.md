@@ -11,10 +11,7 @@ A content script runs on every page and decides what to do:
 1. An explicit per-site setting (from the popup) always wins.
 2. Otherwise, if auto mode is on (the default), it probes the page's real background colour. Dark pages get lightened; light pages are left untouched. It re-checks briefly after load because many sites apply their dark theme from JavaScript.
 
-Two lightening methods:
-
-- **Force light** (default) inverts the whole document and re-inverts images, video, and canvases so photos keep their real colours. This is the reliable option because a browser extension cannot rewrite a site's own dark-theme CSS. Inverting sidesteps that entirely.
-- **Gentle** declares `color-scheme: light`. Cleaner, but only helps sites that go dark solely because they follow your system theme.
+The lightening method inverts the whole document and re-inverts images, video, and canvases so photos keep their real colours. Inversion is the reliable approach because a browser extension cannot rewrite a site's own dark-theme CSS or flip its `prefers-color-scheme` media queries. Inverting sidesteps both.
 
 Settings live in `chrome.storage.sync`, so they follow you across signed-in Chrome installs. Nothing leaves your browser.
 

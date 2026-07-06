@@ -14,7 +14,7 @@ Install it and dark websites simply turn light. Auto mode detects pages with a d
 Features
 • Works on any website with a dark theme, automatically.
 • One-click override per site, in either direction. Keep a site dark or force it light.
-• Two methods: "Force light" for stubborn sites that hard-code a dark theme, and "Gentle" for sites that only follow your system theme.
+• Works even on sites that hard-code their dark theme.
 • Images, video, and photos keep their real colours.
 • Completely free. No account, no ads, no tracking, no data collection.
 

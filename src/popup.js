@@ -11,7 +11,6 @@
 
   var siteEl = document.getElementById("site");
   var enabledEl = document.getElementById("enabled");
-  var modesEl = document.getElementById("modes");
   var noteEl = document.getElementById("note");
   var toggleRow = document.getElementById("toggleRow");
   var resetEl = document.getElementById("reset");
@@ -35,20 +34,8 @@
     noteEl.hidden = false;
   }
 
-  function currentMode() {
-    var checked = modesEl.querySelector('input[name="mode"]:checked');
-    return checked ? checked.value : "force";
-  }
-
-  function setMode(mode) {
-    var target = modesEl.querySelector('input[value="' + (mode || "force") + '"]');
-    if (target) target.checked = true;
-  }
-
-  function render(enabled, mode, explicit) {
+  function render(enabled, explicit) {
     enabledEl.checked = !!enabled;
-    modesEl.disabled = !enabled;
-    setMode(mode);
     resetEl.hidden = !explicit;
   }
 
@@ -71,10 +58,10 @@
       var sites = (data && data.sites) || {};
       var s = sites[host];
       if (s) {
-        render(s.enabled, s.mode, true);
+        render(s.enabled, true);
       } else {
         queryStatus(function (status) {
-          render(status && status.applied, status && status.mode, false);
+          render(status && status.applied, false);
         });
       }
     });
@@ -82,13 +69,13 @@
 
   function saveSite() {
     if (!host) return;
-    var setting = { enabled: enabledEl.checked, mode: currentMode() };
+    var setting = { enabled: enabledEl.checked };
     chrome.storage.sync.get("sites", function (data) {
       var sites = (data && data.sites) || {};
       sites[host] = setting;
       chrome.storage.sync.set({ sites: sites });
     });
-    render(setting.enabled, setting.mode, true);
+    render(setting.enabled, true);
   }
 
   function resetSite() {
@@ -124,7 +111,6 @@
         enabledEl.disabled = true;
         toggleRow.style.opacity = "0.5";
         toggleRow.style.pointerEvents = "none";
-        modesEl.disabled = true;
         showNote("Daylight works on normal web pages, not on browser or extension pages.");
         return;
       }
@@ -135,7 +121,6 @@
   }
 
   enabledEl.addEventListener("change", saveSite);
-  modesEl.addEventListener("change", saveSite);
   resetEl.addEventListener("click", resetSite);
   autoEl.addEventListener("change", saveAuto);
 

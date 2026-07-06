@@ -10,13 +10,10 @@
  *   2. Otherwise, if auto mode is on (the default), detect whether the page is
  *      actually dark and lighten it only then. Light pages are left alone.
  *
- * Two strategies:
- *   - "force"  : invert the whole document, then re-invert images/video/canvas
- *                so photos keep their real colours. Works even when the site
- *                hard-codes its dark theme, which a content script cannot
- *                rewrite any other way.
- *   - "gentle" : declare color-scheme: light. Only helps sites that go dark
- *                because they follow the OS setting.
+ * Method: invert the whole document, then re-invert images/video/canvas so
+ * photos keep their real colours. Inversion works even when the site
+ * hard-codes its dark theme, which a content script cannot rewrite any other
+ * way (extensions can't flip a page's prefers-color-scheme media queries).
  */
 (function () {
   "use strict";
@@ -28,7 +25,7 @@
 
   var STYLE_ID = "daylight-style";
   var host = location.hostname;
-  var appliedMode = null;
+  var applied = false;
   var settings = { sites: {}, auto: true };
   var detectTimers = [];
 
@@ -36,7 +33,7 @@
   // site never painted come out light. hue-rotate(180deg) after invert keeps
   // hues roughly correct instead of turning blues into oranges. Media elements
   // get the same filter again so it cancels out and they display normally.
-  var FORCE_CSS = [
+  var LIGHT_CSS = [
     "html{",
     "  background-color:#000 !important;",
     "  filter:invert(1) hue-rotate(180deg) !important;",
@@ -47,9 +44,7 @@
     "}"
   ].join("\n");
 
-  var GENTLE_CSS = ":root{color-scheme:light !important;}";
-
-  function apply(mode) {
+  function apply() {
     var root = document.documentElement;
     if (!root) return;
     var style = document.getElementById(STYLE_ID);
@@ -58,16 +53,16 @@
       style.id = STYLE_ID;
       root.appendChild(style);
     }
-    style.textContent = mode === "gentle" ? GENTLE_CSS : FORCE_CSS;
+    style.textContent = LIGHT_CSS;
     // Keep the tag last so late-loading site styles don't override it.
     if (root.lastElementChild !== style) root.appendChild(style);
-    appliedMode = mode;
+    applied = true;
   }
 
   function remove() {
     var style = document.getElementById(STYLE_ID);
     if (style) style.remove();
-    appliedMode = null;
+    applied = false;
   }
 
   /* ---------- dark-page detection (for auto mode) ---------- */
@@ -119,9 +114,7 @@
     if (!document.body) return;
     // The filter doesn't change computed background colours, so a page we
     // already lightened still probes dark. Detection is stable once applied.
-    if (pageLooksDark()) {
-      if (appliedMode !== "force") apply("force");
-    }
+    if (pageLooksDark() && !applied) apply();
   }
 
   // Detect now, then twice more: many sites apply their dark theme from
@@ -142,7 +135,7 @@
     clearTimers();
     var s = settings.sites[host];
     if (s) {
-      if (s.enabled) apply(s.mode === "gentle" ? "gentle" : "force");
+      if (s.enabled) apply();
       else remove();
       return;
     }
@@ -176,7 +169,7 @@
   try {
     chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
       if (msg && msg.type === "daylight-status") {
-        sendResponse({ applied: !!appliedMode, mode: appliedMode || "force" });
+        sendResponse({ applied: applied });
       }
     });
   } catch (e) {}
@@ -184,7 +177,7 @@
   // If the site's own scripts strip our style tag, put it back.
   function guard() {
     new MutationObserver(function () {
-      if (appliedMode && !document.getElementById(STYLE_ID)) apply(appliedMode);
+      if (applied && !document.getElementById(STYLE_ID)) apply();
     }).observe(document.documentElement, { childList: true });
   }
 
